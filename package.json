@@ -1,7 +1,7 @@
 {
   "name": "objelion",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "git@github.com:camisetags/objex.git",
   "author": "camisetags <salesseixasgabriel@gmail.com>",
   "license": "MIT",
