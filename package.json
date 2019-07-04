@@ -1,9 +1,9 @@
 {
   "name": "objex",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "index.js",
   "repository": "git@github.com:camisetags/objex.git",
-  "author": "Gabriel Seixas <salesseixasgabriel@gmail.com>",
+  "author": "camisetags <salesseixasgabriel@gmail.com>",
   "license": "MIT",
   "scripts": {
     "test": "jest"
