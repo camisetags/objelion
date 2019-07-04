@@ -10,7 +10,7 @@ function _generateConnectionInterface(cacheClient) {
   };
 }
 
-class Objex {
+class Objelion {
   constructor({
     redisInstance,
     cacheKeyRule,
@@ -64,4 +64,4 @@ class Objex {
   }
 }
 
-module.exports = Objex;
+module.exports = Objelion;

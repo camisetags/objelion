@@ -1,4 +1,4 @@
-const Objex = require('../src');
+const Objelion = require('../src');
 
 const cache = {};
 
@@ -13,19 +13,19 @@ const redisClient = {
 const cacheKeyRule = (fnName, args) => `TEST_TARGET-test-${fnName}-${JSON.stringify(args)}`;
 
 test('curry pattern', () => {
-  const objex = new Objex({
+  const objelion = new Objelion({
     enabled: true,
     redisInstance: redisClient,
     cacheKeyRule,
   });
 
-  const cacheMiddleware = objex.createCacheMiddleware();
+  const cacheMiddleware = objelion.createCacheMiddleware();
 
   expect(cacheMiddleware).toBeInstanceOf(Function);
 });
 
 test('caches object functions', () => {
-  const objex = new Objex({
+  const objelion = new Objelion({
     enabled: true,
     redisInstance: redisClient,
     cacheKeyRule,
@@ -35,7 +35,7 @@ test('caches object functions', () => {
     testFun: () => 2 + 2,
   };
 
-  const cacheMiddleware = objex.createCacheMiddleware();
+  const cacheMiddleware = objelion.createCacheMiddleware();
   const cachedTargetObj = cacheMiddleware(targetObj);
 
   cachedTargetObj
@@ -47,7 +47,7 @@ test('caches object functions', () => {
 });
 
 test('saves key with rule function', () => {
-  const objex = new Objex({
+  const objelion = new Objelion({
     enabled: true,
     redisInstance: redisClient,
     cacheKeyRule,
@@ -59,7 +59,7 @@ test('saves key with rule function', () => {
     testFun: () => 2 + 2,
   };
 
-  const cacheMiddleware = objex.createCacheMiddleware();
+  const cacheMiddleware = objelion.createCacheMiddleware();
   const cachedTargetObj = cacheMiddleware(targetObj);
 
   cachedTargetObj
@@ -71,7 +71,7 @@ test('saves key with rule function', () => {
 });
 
 test('handle enabled', () => {
-  const objex = new Objex({
+  const objelion = new Objelion({
     enabled: false,
     redisInstance: redisClient,
     cacheKeyRule,
@@ -83,7 +83,7 @@ test('handle enabled', () => {
     testFun: () => 2 + 2,
   };
 
-  const cacheMiddleware = objex.createCacheMiddleware();
+  const cacheMiddleware = objelion.createCacheMiddleware();
   const cachedTargetObj = cacheMiddleware(targetObj);
 
   cachedTargetObj
