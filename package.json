@@ -1,0 +1,15 @@
+{
+  "name": "objex",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:camisetags/objex.git",
+  "author": "Gabriel Seixas <salesseixasgabriel@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0",
+    "redis-mock": "^0.44.0"
+  }
+}
