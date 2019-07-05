@@ -4,8 +4,8 @@ function _generateConnectionInterface(cacheClient) {
   return {
     get: cacheClient.get.bind(cacheClient),
     set: cacheClient.set.bind(cacheClient),
-    setex: (key, timeout = 15, value) => {
-      cacheClient.set(key, value, 'EX', timeout);
+    setex: (key, expireTime, value) => {
+      cacheClient.set(key, value, 'EX', expireTime);
     },
   };
 }
@@ -17,12 +17,14 @@ class Objelion {
     skipMethods = _skipMethods,
     generateConnectionInterface = _generateConnectionInterface,
     enabled,
+    expireTime,
   }) {
     this.redisInstance = redisInstance;
     this.cacheKeyRule = cacheKeyRule;
     this.skipMethods = skipMethods;
     this.generateConnectionInterface = generateConnectionInterface;
     this.enabled = enabled;
+    this.expireTime = expireTime;
   }
 
   createCacheMiddleware() {
@@ -50,7 +52,7 @@ class Objelion {
                 const result = await Promise.resolve(origMethod.apply(this, args));
 
                 if (!isSkipMetod) {
-                  cacheClient.setex(cacheKey, 15, JSON.stringify(result));
+                  cacheClient.setex(cacheKey, expireTime, JSON.stringify(result));
                 }
 
                 return result;
