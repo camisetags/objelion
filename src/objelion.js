@@ -47,10 +47,7 @@ class Objelion {
                   return JSON.parse(cacheResult);
                 }
 
-                const result =
-                  origMethod instanceof Promise
-                    ? await origMethod.apply(this, args)
-                    : origMethod.apply(this, args);
+                const result = await Promise.resolve(origMethod.apply(this, args));
 
                 if (!isSkipMetod) {
                   cacheClient.setex(cacheKey, 15, JSON.stringify(result));
@@ -58,7 +55,7 @@ class Objelion {
 
                 return result;
               }
-            : async (...args) => origMethod.apply(this, args);
+            : async (...args) => Promise.resolve(origMethod.apply(this, args));
         },
       });
   }
