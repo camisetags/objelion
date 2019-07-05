@@ -1,4 +1,4 @@
-const Objelion = require('../src');
+const Objelion = require('../src/objelion');
 
 const cache = {};
 
