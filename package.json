@@ -9,7 +9,6 @@
     "test": "jest"
   },
   "devDependencies": {
-    "jest": "^24.8.0",
-    "redis-mock": "^0.44.0"
+    "jest": "^24.8.0"
   }
 }

@@ -2769,11 +2769,6 @@ realpath-native@^1.1.0:
   dependencies:
     util.promisify "^1.0.0"
 
-redis-mock@^0.44.0:
-  version "0.44.0"
-  resolved "https://registry.yarnpkg.com/redis-mock/-/redis-mock-0.44.0.tgz#10466421bb96d77440e152398ea1107198ecadbe"
-  integrity sha512-n28zlPa8BWX34XnaIfNDZc/SJn2H6xlnP5c01+s/86rBm+8VGuOltcFFZXaI9IKwIPA4kJD2cdf1dP3P+eNjPA==
-
 regex-not@^1.0.0, regex-not@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/regex-not/-/regex-not-1.0.2.tgz#1f4ece27e00b0b65e0247a6810e6a85d83a5752c"
