@@ -14,7 +14,7 @@ const redisClient = new Redis({
 
 const objelion = new Objelion({
   enabled: true,
-  redisInstance: redisClient,
+  cacheClient: redisClient, // by default you can use memoization
   cacheKeyRule: (fnName, args) => 'Rule to mount keys',
   expireTime: 15
 });

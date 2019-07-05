@@ -1,6 +1,6 @@
 interface PrimaryCacheClient {
   get(key: string): string
-  set(key: string, value: any, strategy?: string, timeout?: number): string
+  set(key: string, value: any, strategy?: string, expireTime?: number): string
 }
 
 export interface CacheClient extends PrimaryCacheClient {
@@ -8,11 +8,15 @@ export interface CacheClient extends PrimaryCacheClient {
 }
 
 interface Config {
-  redisInstance: CacheClient
+  cacheClient?: CacheClient
   cacheKeyRule: Function
   skipMethodKeys?: Array<string>
   enabled: boolean
   expireTime: number
+}
+
+interface CacheResult {
+  [prop: string]: string
 }
 
 export interface TargetObject {
@@ -30,23 +34,45 @@ const _skipMethodKeys = [
   'remove'
 ]
 
+const cache: CacheResult = {}
+
 export default class Objelion {
-  private redisInstance: CacheClient
+  private cacheClient: CacheClient
   private cacheKeyRule: Function
   private skipMethodKeys: Array<string>
   private enabled: boolean
   private expireTime: number
+  private cache: CacheResult = {}
 
   constructor(config: Config) {
-    this.redisInstance = config.redisInstance
+    this.cacheClient = config.cacheClient || this.memoizationClient
     this.cacheKeyRule = config.cacheKeyRule
     this.skipMethodKeys = config.skipMethodKeys || _skipMethodKeys
     this.enabled = config.enabled
     this.expireTime = config.expireTime
   }
 
+  private memoizationClient: CacheClient = {
+    get: (key: string): string => {
+      return this.cache[key]
+    },
+
+    set: (key: string, value: any) => {
+      this.cache[key] = JSON.stringify(value)
+      return this.cache[key]
+    },
+
+    setex: (key: string, expireTime: number = 15, value: any) => {
+      this.cache[key] = JSON.stringify(value)
+
+      setTimeout(() => {
+        delete this.cache[key]
+      }, expireTime * 1000)
+    }
+  }
+
   public createCacheMiddleware() {
-    const cacheClient = this.generateConnectionInterface(this.redisInstance)
+    const cacheClient = this.generateConnectionInterface(this.cacheClient)
     const { enabled, skipMethodKeys, cacheKeyRule, expireTime } = this
 
     return (targetDatasource: TargetObject) =>
