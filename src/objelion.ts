@@ -34,8 +34,6 @@ const _skipMethodKeys = [
   'remove'
 ]
 
-const cache: CacheResult = {}
-
 export default class Objelion {
   private cacheClient: CacheClient
   private cacheKeyRule: Function
@@ -57,12 +55,12 @@ export default class Objelion {
       return this.cache[key]
     },
 
-    set: (key: string, value: any) => {
+    set: (key: string, value: any): string => {
       this.cache[key] = JSON.stringify(value)
       return this.cache[key]
     },
 
-    setex: (key: string, expireTime: number = 15, value: any) => {
+    setex: (key: string, expireTime: number = 15, value: any): void => {
       this.cache[key] = JSON.stringify(value)
 
       setTimeout(() => {

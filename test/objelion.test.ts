@@ -18,7 +18,7 @@ const cacheKeyRule = (fnName: string, args: any[]) =>
 test('curry pattern', () => {
   const objelion = new Objelion({
     enabled: true,
-    redisInstance: redisClient,
+    cacheClient: redisClient,
     cacheKeyRule,
     expireTime: 15
   })
@@ -31,7 +31,7 @@ test('curry pattern', () => {
 test('caches object functions', () => {
   const objelion = new Objelion({
     enabled: true,
-    redisInstance: redisClient,
+    cacheClient: redisClient,
     cacheKeyRule,
     expireTime: 15
   })
@@ -55,7 +55,7 @@ test('caches object functions', () => {
 test('saves key with rule function', () => {
   const objelion = new Objelion({
     enabled: true,
-    redisInstance: redisClient,
+    cacheClient: redisClient,
     cacheKeyRule,
     expireTime: 15
   })
@@ -81,7 +81,7 @@ test('saves key with rule function', () => {
 test('handle enabled', () => {
   const objelion = new Objelion({
     enabled: true,
-    redisInstance: redisClient,
+    cacheClient: redisClient,
     cacheKeyRule,
     expireTime: 15
   })
@@ -98,6 +98,29 @@ test('handle enabled', () => {
     .testFun()
     .then(() => {
       expect(Object.keys(cache).length).toBe(0)
+    })
+    // tslint:disable-next-line:no-empty
+    .catch(() => {})
+})
+
+test('memoization saves', () => {
+  const objelion = new Objelion({
+    enabled: true,
+    cacheKeyRule,
+    expireTime: 15
+  })
+
+  const targetObj = {
+    testFun: () => 2 + 2
+  }
+
+  const cacheMiddleware = objelion.createCacheMiddleware()
+  const cachedTargetObj = cacheMiddleware(targetObj)
+
+  cachedTargetObj
+    .testFun()
+    .then((result: any) => {
+      expect(result).toBe(2)
     })
     // tslint:disable-next-line:no-empty
     .catch(() => {})
