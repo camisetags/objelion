@@ -57,7 +57,7 @@ export default class Objelion {
 
   private memoizationClient: CacheClient = {
     get: (key: string): string => {
-      return this.cache[key]
+      return JSON.parse(this.cache[key])
     },
 
     set: (key: string, value: any): string => {
