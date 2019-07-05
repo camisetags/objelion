@@ -1,22 +1,26 @@
-import Objelion from '../src'
+import Objelion, { CacheClient, TargetObject } from '../src/objelion'
 
-const cache = {}
+const cache: TargetObject = {}
 
-const redisClient = {
-  set: (key, value, t, time) => {
+const redisClient: CacheClient = {
+  set: (key: string, value: any, strategy?: string, timeout?: any): any => {
     cache[key] = value
     return value
   },
-  get: key => cache[key]
+  get: (key: string) => cache[key],
+  // tslint:disable-next-line:no-empty
+  setex: () => {}
 }
 
-const cacheKeyRule = (fnName, args) => `TEST_TARGET-test-${fnName}-${JSON.stringify(args)}`
+const cacheKeyRule = (fnName: string, args: any[]) =>
+  `TEST_TARGET-test-${fnName}-${JSON.stringify(args)}`
 
 test('curry pattern', () => {
   const objelion = new Objelion({
     enabled: true,
     redisInstance: redisClient,
-    cacheKeyRule
+    cacheKeyRule,
+    expireTime: 15
   })
 
   const cacheMiddleware = objelion.createCacheMiddleware()
@@ -28,7 +32,8 @@ test('caches object functions', () => {
   const objelion = new Objelion({
     enabled: true,
     redisInstance: redisClient,
-    cacheKeyRule
+    cacheKeyRule,
+    expireTime: 15
   })
 
   const targetObj = {
@@ -40,9 +45,10 @@ test('caches object functions', () => {
 
   cachedTargetObj
     .testFun()
-    .then(result => {
+    .then((result: any) => {
       expect(result).toBe(2)
     })
+    // tslint:disable-next-line:no-empty
     .catch(() => {})
 })
 
@@ -50,7 +56,8 @@ test('saves key with rule function', () => {
   const objelion = new Objelion({
     enabled: true,
     redisInstance: redisClient,
-    cacheKeyRule
+    cacheKeyRule,
+    expireTime: 15
   })
 
   delete cache['TEST_TARGET-test-testFun-[]']
@@ -67,16 +74,17 @@ test('saves key with rule function', () => {
     .then(() => {
       expect('TEST_TARGET-test-testFun-[]' in cache).toBe(true)
     })
+    // tslint:disable-next-line:no-empty
     .catch(() => {})
 })
 
 test('handle enabled', () => {
   const objelion = new Objelion({
-    enabled: false,
+    enabled: true,
     redisInstance: redisClient,
-    cacheKeyRule
+    cacheKeyRule,
+    expireTime: 15
   })
-
   delete cache['TEST_TARGET-test-testFun-[]']
 
   const targetObj = {
@@ -91,5 +99,6 @@ test('handle enabled', () => {
     .then(() => {
       expect(Object.keys(cache).length).toBe(0)
     })
+    // tslint:disable-next-line:no-empty
     .catch(() => {})
 })

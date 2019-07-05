@@ -1,52 +1,62 @@
-const _skipMethods = ['insert', 'create', 'add', 'update', 'alter', 'delete', 'destroy', 'remove']
-
 interface PrimaryCacheClient {
   get(key: string): string
   set(key: string, value: any, strategy?: string, timeout?: number): string
 }
 
-interface CacheClient extends PrimaryCacheClient {
+export interface CacheClient extends PrimaryCacheClient {
   setex(key: string, timeout: number, value: any): void
 }
 
-
-function _generateConnectionInterface(cacheClient: PrimaryCacheClient): CacheClient {
-  return {
-    get: cacheClient.get.bind(cacheClient),
-    set: cacheClient.set.bind(cacheClient),
-    setex: (key: string, timeout: number = 15, value: any) => {
-      cacheClient.set(key, value, 'EX', timeout)
-    }
-  }
+interface Config {
+  redisInstance: CacheClient
+  cacheKeyRule: Function
+  skipMethodKeys?: Array<string>
+  enabled: boolean
+  expireTime: number
 }
 
+export interface TargetObject {
+  [prop: string]: any
+}
+
+const _skipMethodKeys = [
+  'insert',
+  'create',
+  'add',
+  'update',
+  'alter',
+  'delete',
+  'destroy',
+  'remove'
+]
+
 export default class Objelion {
-  constructor(config: {
-    redisInstance: CacheClient,
-    cacheKeyRule: Function,
-    skipMethods: array = _skipMethods,
-    generateConnectionInterface = _generateConnectionInterface,
-    enabled: boolean
-  }) {
+  private redisInstance: CacheClient
+  private cacheKeyRule: Function
+  private skipMethodKeys: Array<string>
+  private enabled: boolean
+  private expireTime: number
+
+  constructor(config: Config) {
     this.redisInstance = config.redisInstance
     this.cacheKeyRule = config.cacheKeyRule
-    this.skipMethods = config.skipMethods
-    this.generateConnectionInterface = config.generateConnectionInterface
+    this.skipMethodKeys = config.skipMethodKeys || _skipMethodKeys
     this.enabled = config.enabled
+    this.expireTime = config.expireTime
   }
 
-  createCacheMiddleware() {
+  public createCacheMiddleware() {
     const cacheClient = this.generateConnectionInterface(this.redisInstance)
-    const { enabled, skipMethods, cacheKeyRule } = this
+    const { enabled, skipMethodKeys, cacheKeyRule, expireTime } = this
 
-    return targetDatasource =>
+    return (targetDatasource: TargetObject) =>
       new Proxy(targetDatasource, {
-        get(targetObj, methodName) {
+        get(targetObj: TargetObject, methodName: string) {
           const origMethod = targetObj[methodName]
 
           return enabled
-            ? async (...args) => {
-                const isSkipMetod = skipMethods.some(term =>
+            ? async (...args: any[]) => {
+                const isSkipMetod = skipMethodKeys.some(term =>
                   methodName.toLowerCase().includes(term)
                 )
 
@@ -57,19 +67,26 @@ export default class Objelion {
                   return JSON.parse(cacheResult)
                 }
 
-                const result =
-                  origMethod instanceof Promise
-                    ? await origMethod.apply(this, args)
-                    : origMethod.apply(this, args)
+                const result = await Promise.resolve(origMethod.apply(this, args))
 
                 if (!isSkipMetod) {
-                  cacheClient.setex(cacheKey, 15, JSON.stringify(result))
+                  cacheClient.setex(cacheKey, expireTime, JSON.stringify(result))
                 }
 
                 return result
               }
-            : async (...args) => origMethod.apply(this, args)
+            : async (...args: any[]) => Promise.resolve(origMethod.apply(this, args))
         }
       })
+  }
+
+  private generateConnectionInterface(cacheClient: PrimaryCacheClient): CacheClient {
+    return {
+      get: cacheClient.get.bind(cacheClient),
+      set: cacheClient.set.bind(cacheClient),
+      setex: (key: string, expireTime: number = 15, value: any) => {
+        cacheClient.set(key, value, 'EX', expireTime)
+      }
+    }
   }
 }
