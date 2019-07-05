@@ -42,7 +42,12 @@ export default class Objelion {
   private expireTime: number
   private cache: CacheResult = {}
 
+  private isInternalClient: boolean = false
+
   constructor(config: Config) {
+    if (config.cacheClient) {
+      this.isInternalClient = true
+    }
     this.cacheClient = config.cacheClient || this.memoizationClient
     this.cacheKeyRule = config.cacheKeyRule
     this.skipMethodKeys = config.skipMethodKeys || _skipMethodKeys
@@ -70,7 +75,10 @@ export default class Objelion {
   }
 
   public createCacheMiddleware() {
-    const cacheClient = this.generateConnectionInterface(this.cacheClient)
+    const cacheClient = this.isInternalClient
+      ? this.generateConnectionInterface(this.cacheClient)
+      : this.memoizationClient
+
     const { enabled, skipMethodKeys, cacheKeyRule, expireTime } = this
 
     return (targetDatasource: TargetObject) =>
