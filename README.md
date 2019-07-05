@@ -16,6 +16,7 @@ const objelion = new Objelion({
   enabled: true,
   redisInstance: redisClient,
   cacheKeyRule: (fnName, args) => 'Rule to mount keys',
+  expireTime: 15
 });
 
 const cacheMiddleware = objelion.createCacheMiddleware();
