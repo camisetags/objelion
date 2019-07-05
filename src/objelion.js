@@ -29,7 +29,7 @@ class Objelion {
 
   createCacheMiddleware() {
     const cacheClient = this.generateConnectionInterface(this.redisInstance);
-    const { enabled, skipMethods, cacheKeyRule } = this;
+    const { enabled, skipMethods, cacheKeyRule, expireTime } = this;
 
     return targetDatasource =>
       new Proxy(targetDatasource, {
