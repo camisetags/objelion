@@ -1,12 +1,12 @@
 # objelion
 
-A cache layer to object functions
+A cache layer for object functions
 
 ## How to use
 
 ```js
 const Objelion = require('objelion');
-const Redis = require('redis-node'); // it works with ioredis too
+const Redis = require('redis-node'); // it also works with ioredis
 
 const redisClient = new Redis({
   // redis connection data

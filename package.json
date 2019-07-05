@@ -1,6 +1,6 @@
 {
   "name": "objelion",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "description": "",
   "keywords": [],
   "main": "dist/objelion.umd.js",
@@ -9,7 +9,7 @@
   "files": [
     "dist"
   ],
-  "author": "Gabriel Seixas <salesseixasgabriel@gmail.com>",
+  "author": "camisetags <salesseixasgabriel@gmail.com>",
   "repository": {
     "type": "git",
     "url": ""
