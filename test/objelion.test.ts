@@ -46,7 +46,31 @@ test('caches object functions', () => {
   cachedTargetObj
     .testFun()
     .then((result: any) => {
-      expect(result).toBe(2)
+      expect(result).toBe(4)
+    })
+    // tslint:disable-next-line:no-empty
+    .catch(() => {})
+})
+
+test('caches object from promises', () => {
+  const objelion = new Objelion({
+    enabled: true,
+    cacheClient: redisClient,
+    cacheKeyRule,
+    expireTime: 15
+  })
+
+  const targetObj = {
+    testFun: () => Promise.resolve(2 + 2)
+  }
+
+  const cacheMiddleware = objelion.createCacheMiddleware()
+  const cachedTargetObj = cacheMiddleware(targetObj)
+
+  cachedTargetObj
+    .testFun()
+    .then((result: any) => {
+      expect(result).toBe(4)
     })
     // tslint:disable-next-line:no-empty
     .catch(() => {})
@@ -120,7 +144,7 @@ test('memoization saves', () => {
   cachedTargetObj
     .testFun()
     .then((result: any) => {
-      expect(result).toBe(2)
+      expect(result).toBe(4)
     })
     // tslint:disable-next-line:no-empty
     .catch(() => {})

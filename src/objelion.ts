@@ -57,16 +57,16 @@ export default class Objelion {
 
   private memoizationClient: CacheClient = {
     get: (key: string): string => {
-      return JSON.parse(this.cache[key])
+      return this.cache[key]
     },
 
     set: (key: string, value: any): string => {
-      this.cache[key] = JSON.stringify(value)
+      this.cache[key] = value
       return this.cache[key]
     },
 
     setex: (key: string, expireTime: number = 15, value: any): void => {
-      this.cache[key] = JSON.stringify(value)
+      this.cache[key] = value
 
       setTimeout(() => {
         delete this.cache[key]
