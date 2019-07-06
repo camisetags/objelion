@@ -76,8 +76,8 @@ export default class Objelion {
 
   public createCacheMiddleware() {
     const cacheClient = this.isInternalClient
-      ? this.generateConnectionInterface(this.cacheClient)
-      : this.memoizationClient
+      ? this.memoizationClient
+      : this.generateConnectionInterface(this.cacheClient)
 
     const { enabled, skipMethodKeys, cacheKeyRule, expireTime } = this
 
