@@ -24,6 +24,8 @@ export interface Config {
 }
 
 const _skipMethodKeys = [
+  'new',
+  'save',
   'insert',
   'create',
   'add',
