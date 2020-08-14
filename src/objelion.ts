@@ -1,4 +1,4 @@
-import { CacheClient, CacheResult, Config, TargetObject, PrimaryCacheClient } from './cacheTypes';
+import { CacheClient, CacheResult, TargetObject, PrimaryCacheClient } from './cacheTypes';
 
 const _skipMethodKeys = [
   'new',
@@ -12,6 +12,14 @@ const _skipMethodKeys = [
   'destroy',
   'remove'
 ];
+
+export interface Config {
+  cacheClient?: CacheClient
+  cacheKeyRule: Function
+  skipMethodKeys?: string[]
+  enabled: boolean
+  expireTime: number
+}
 
 export default class Objelion {
   private cacheClient: CacheClient;

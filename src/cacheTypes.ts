@@ -14,11 +14,3 @@ export interface CacheResult {
 export interface TargetObject {
   [prop: string]: any
 }
-
-export interface Config {
-  cacheClient?: CacheClient
-  cacheKeyRule: Function
-  skipMethodKeys?: string[]
-  enabled: boolean
-  expireTime: number
-}
