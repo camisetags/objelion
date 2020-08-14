@@ -1,22 +1,22 @@
 {
-  "name": "new_ts_template",
+  "name": "objelion",
   "author": "camisetags <salesseixasgabriel@gmail.com>",
   "license": "ISC",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "homepage": "https://github.com/camisetags/new_ts_template#readme",
+  "homepage": "https://github.com/camisetags/objelion#readme",
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/camisetags/new_ts_template.git"
+    "url": "git+https://github.com/camisetags/objelion.git"
   },
   "bugs": {
-    "url": "https://github.com/camisetags/new_ts_template/issues"
+    "url": "https://github.com/camisetags/objelion/issues"
   },
   "devDependencies": {
     "@types/jest": "^26.0.9",
