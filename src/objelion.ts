@@ -107,7 +107,7 @@ export default class Objelion {
 
                 return result
               }
-            : async (...args: any[]) => Promise.resolve(origMethod.apply(this, args))
+            : (...args: any[]) => Promise.resolve(origMethod.apply(this, args))
         }
       })
   }
