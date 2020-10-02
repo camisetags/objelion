@@ -23,6 +23,46 @@ export interface Config {
   expireTime: number
 }
 
+interface MethodExecutionDTO {
+  skipMethodKeys: string[]
+  cacheKeyRule: Function
+  cacheClient: CacheClient
+  origMethod: Function
+  expireTime: number
+  methodName: string
+  context: ProxyHandler<TargetObject>
+}
+
+const funcExecution = (ecxecMethodDTO: MethodExecutionDTO) =>
+  async function(...args: any[]) {
+    const {
+      skipMethodKeys,
+      methodName,
+      cacheKeyRule,
+      cacheClient,
+      origMethod,
+      context,
+      expireTime
+    } = ecxecMethodDTO
+
+    const isSkipMetod = skipMethodKeys.some(term => methodName.toLowerCase().includes(term))
+
+    const cacheKey = cacheKeyRule(methodName, args)
+    const cacheResult = !isSkipMetod ? await cacheClient.get(cacheKey) : null
+
+    if (cacheResult) {
+      return JSON.parse(cacheResult)
+    }
+
+    const result = await Promise.resolve(origMethod.apply(context, args))
+
+    if (!isSkipMetod) {
+      cacheClient.setex(cacheKey, expireTime, JSON.stringify(result))
+    }
+
+    return result
+  }
+
 const _skipMethodKeys = [
   'insert',
   'create',
@@ -87,26 +127,15 @@ export default class Objelion {
           const origMethod = targetObj[methodName]
 
           return enabled
-            ? async (...args: any[]) => {
-                const isSkipMetod = skipMethodKeys.some(term =>
-                  methodName.toLowerCase().includes(term)
-                )
-
-                const cacheKey = cacheKeyRule(methodName, args)
-                const cacheResult = !isSkipMetod ? await cacheClient.get(cacheKey) : null
-
-                if (cacheResult) {
-                  return JSON.parse(cacheResult)
-                }
-
-                const result = await Promise.resolve(origMethod.apply(this, args))
-
-                if (!isSkipMetod) {
-                  cacheClient.setex(cacheKey, expireTime, JSON.stringify(result))
-                }
-
-                return result
-              }
+            ? funcExecution({
+                context: this,
+                cacheClient,
+                cacheKeyRule,
+                expireTime,
+                methodName,
+                skipMethodKeys,
+                origMethod
+              })
             : (...args: any[]) => Promise.resolve(origMethod.apply(this, args))
         }
       })
