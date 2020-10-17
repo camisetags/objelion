@@ -10,7 +10,7 @@ simple functions results, objelion resolves this problem.
 ## How to use
 
 ```js
-const Objelion = require('objelion');
+const Objelion = require('objelion').default;
 const Redis = require('redis-node'); // it also works with ioredis
 
 const redisClient = new Redis({
