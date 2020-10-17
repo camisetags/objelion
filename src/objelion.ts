@@ -33,6 +33,17 @@ interface MethodExecutionDTO {
   context: ProxyHandler<TargetObject>
 }
 
+const _skipMethodKeys = [
+  'insert',
+  'create',
+  'add',
+  'update',
+  'alter',
+  'delete',
+  'destroy',
+  'remove'
+]
+
 const funcExecution = (ecxecMethodDTO: MethodExecutionDTO) =>
   async function(...args: any[]) {
     const {
@@ -62,17 +73,6 @@ const funcExecution = (ecxecMethodDTO: MethodExecutionDTO) =>
 
     return result
   }
-
-const _skipMethodKeys = [
-  'insert',
-  'create',
-  'add',
-  'update',
-  'alter',
-  'delete',
-  'destroy',
-  'remove'
-]
 
 export default class Objelion {
   private cacheClient: CacheClient
