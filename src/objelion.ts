@@ -8,7 +8,7 @@ export interface CacheClient extends PrimaryCacheClient {
 }
 
 export interface CacheResult {
-  [prop: string]: string
+  [prop: string]: any
 }
 
 export interface TargetObject {
