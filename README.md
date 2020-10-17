@@ -1,6 +1,11 @@
 # objelion
 
-A cache layer for object functions
+A cache layer for object functions.
+
+# Why?
+
+Sometimes you need to cache response from objects functions or 
+simple functions results, objelion resolves this problem.
 
 ## How to use
 
