@@ -8,7 +8,7 @@ export interface CacheClient extends PrimaryCacheClient {
 }
 
 export interface CacheResult {
-  [prop: string]: string
+  [prop: string]: any
 }
 
 export interface TargetObject {
@@ -32,6 +32,17 @@ interface MethodExecutionDTO {
   methodName: string
   context: ProxyHandler<TargetObject>
 }
+
+const _skipMethodKeys = [
+  'insert',
+  'create',
+  'add',
+  'update',
+  'alter',
+  'delete',
+  'destroy',
+  'remove'
+]
 
 const funcExecution = (ecxecMethodDTO: MethodExecutionDTO) =>
   async function(...args: any[]) {
@@ -62,17 +73,6 @@ const funcExecution = (ecxecMethodDTO: MethodExecutionDTO) =>
 
     return result
   }
-
-const _skipMethodKeys = [
-  'insert',
-  'create',
-  'add',
-  'update',
-  'alter',
-  'delete',
-  'destroy',
-  'remove'
-]
 
 export default class Objelion {
   private cacheClient: CacheClient
